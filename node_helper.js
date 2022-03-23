@@ -40,16 +40,14 @@ module.exports = NodeHelper.create({
         "&message=" +
         encodeURI(payload.message);
 
-      const request = http.get(url, (response) => {
+      http.get(url, (response) => {
         console.log("notif MMM-syslog with response " + response.statusCode);
       });
     }
   },
 
   getStats: function () {
-    var self = this;
-
-    var temp_conv = "";
+    let temp_conv = "";
     switch (this.config.units) {
       case "imperial":
         temp_conv = "awk '{printf(\"%.1f°F\\n\",(($1*1.8)/1e3)+32)}'";
@@ -64,9 +62,13 @@ module.exports = NodeHelper.create({
         break;
     }
 
+    const filePathThermal = "/sys/class/thermal/thermal_zone0/temp";
+
     Promise.all([
       // get cpu temp
-      exec(temp_conv + " /sys/class/thermal/thermal_zone0/temp"),
+      exec(
+        `if [ -f "${filePathThermal}" ]; then ${temp_conv} ${filePathThermal}; fi;`
+      ),
       // get system load
       exec("cat /proc/loadavg"),
       // get free ram in %
@@ -79,15 +81,16 @@ module.exports = NodeHelper.create({
       exec("hostname -I")
     ])
       .then((res) => {
+        console.log(res);
         var stats = {};
-        stats.cpuTemp = res[0][0];
-        stats.sysLoad = res[1][0].split(" ");
-        stats.freeMem = res[2][0];
-        stats.upTime = res[3][0].split(" ");
-        stats.freeSpace = res[4][0];
-        stats.ipAddress = res[5][0];
-        // console.log(stats);
-        self.sendSocketNotification("STATS", stats);
+        stats.cpuTemp = res[0].stdout;
+        stats.sysLoad = res[1].stdout.split(" ");
+        stats.freeMem = res[2].stdout;
+        stats.upTime = res[3].stdout.split(" ");
+        stats.freeSpace = res[4].stdout;
+        stats.ipAddress = res[5].stdout;
+        console.log(stats);
+        this.sendSocketNotification("STATS", stats);
       })
       .catch((err) => {
         console.error(err);
