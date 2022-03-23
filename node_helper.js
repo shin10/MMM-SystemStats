@@ -8,9 +8,9 @@
  */
 
 const NodeHelper = require("node_helper");
-var async = require("async");
-var exec = require("child_process").exec;
-var request = require("request");
+const util = require("util");
+const exec = util.promisify(require("child_process").exec);
+const http = require("http");
 
 module.exports = NodeHelper.create({
   start: function () {
@@ -33,20 +33,16 @@ module.exports = NodeHelper.create({
       this.config = payload.config;
       // notif syslog
       //console.log('url : ' + payload.config.baseURLSyslog);
-      request(
-        {
-          url:
-            payload.config.baseURLSyslog +
-            "?type=" +
-            payload.type +
-            "&message=" +
-            encodeURI(payload.message),
-          method: "GET"
-        },
-        function (error, response, body) {
-          console.log("notif MMM-syslog with response " + response.statusCode);
-        }
-      );
+      const url =
+        payload.config.baseURLSyslog +
+        "?type=" +
+        payload.type +
+        "&message=" +
+        encodeURI(payload.message);
+
+      const request = http.get(url, (response) => {
+        console.log("notif MMM-syslog with response " + response.statusCode);
+      });
     }
   },
 
@@ -68,20 +64,19 @@ module.exports = NodeHelper.create({
         break;
     }
 
-    async.parallel(
-      [
-        // get cpu temp
-        async.apply(exec, temp_conv + " /sys/class/thermal/thermal_zone0/temp"),
-        // get system load
-        async.apply(exec, "cat /proc/loadavg"),
-        // get free ram in %
-        async.apply(exec, "free | awk '/^Mem:/ {print $4*100/$2}'"),
-        // get uptime
-        async.apply(exec, "cat /proc/uptime"),
-        // get root free-space
-        async.apply(exec, "df -h|grep /dev/root|awk '{print $4}'")
-      ],
-      function (err, res) {
+    Promise.all([
+      // get cpu temp
+      exec(temp_conv + " /sys/class/thermal/thermal_zone0/temp"),
+      // get system load
+      exec("cat /proc/loadavg"),
+      // get free ram in %
+      exec("free | awk '/^Mem:/ {print $4*100/$2}'"),
+      // get uptime
+      exec("cat /proc/uptime"),
+      // get root free-space
+      exec("df -h|grep /dev/root|awk '{print $4}'")
+    ])
+      .then((res) => {
         var stats = {};
         stats.cpuTemp = res[0][0];
         stats.sysLoad = res[1][0].split(" ");
@@ -90,8 +85,10 @@ module.exports = NodeHelper.create({
         stats.freeSpace = res[4][0];
         // console.log(stats);
         self.sendSocketNotification("STATS", stats);
-      }
-    );
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   // http://unix.stackexchange.com/questions/69185/getting-cpu-usage-same-every-time/69194#69194
