@@ -72,7 +72,7 @@ module.exports = NodeHelper.create({
       // get system load
       exec("cat /proc/loadavg"),
       // get free ram in %
-      exec("free | awk '/^Mem:/ {print $4*100/$2}'"),
+      exec("sh -c \"LANG=en; free | awk '/^Mem:/ {print \\$4*100/\\$2}'\""),
       // get uptime
       exec("cat /proc/uptime"),
       // get root free-space
