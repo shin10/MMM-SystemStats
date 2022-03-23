@@ -10,16 +10,27 @@ Module.register("MMM-SystemStats", {
     updateInterval: 10000,
     animationSpeed: 0,
     align: "right",
+    alignText: null,
+    alignIcon: null,
+    alignValue: null,
     language: config.language,
     units: config.units,
     useSyslog: false,
     thresholdCPUTemp: 75, // in configured units
     baseURLSyslog: "http://127.0.0.1:8080/syslog",
-    label: "textAndIcon"
+    label: "textAndIcon",
+    statItems: [
+      "cpuTemp",
+      "sysLoad",
+      "freeMem",
+      "upTime",
+      "freeSpace",
+      "ipAddress"
+    ]
   },
   // Define required styles.
   getStyles: function () {
-    return ["font-awesome.css"];
+    return ["font-awesome.css", "MMM-SystemStats.css"];
   },
   // Define required scripts.
   getScripts: function () {
@@ -29,10 +40,11 @@ Module.register("MMM-SystemStats", {
   // Define required translations.
   getTranslations: function () {
     return {
+      de: "translations/de.json",
       en: "translations/en.json",
       fr: "translations/fr.json",
       id: "translations/id.json",
-      de: "translations/de.json"
+      sv: "translations/sv.json"
     };
   },
 
@@ -43,13 +55,14 @@ Module.register("MMM-SystemStats", {
     // set locale
     moment.locale(this.config.language);
 
-    this.stats = {};
-    this.stats.cpuTemp = this.translate("LOADING").toLowerCase();
-    this.stats.sysLoad = this.translate("LOADING").toLowerCase();
-    this.stats.freeMem = this.translate("LOADING").toLowerCase();
-    this.stats.upTime = this.translate("LOADING").toLowerCase();
-    this.stats.freeSpace = this.translate("LOADING").toLowerCase();
-    this.stats.ipAddress = this.translate("LOADING").toLowerCase();
+    this.stats = {
+      cpuTemp: null,
+      sysLoad: null,
+      freeMem: null,
+      upTime: null,
+      freeSpace: null,
+      ipAddress: null
+    };
     this.sendSocketNotification("CONFIG", this.config);
   },
 
@@ -83,9 +96,9 @@ Module.register("MMM-SystemStats", {
           });
         }
       }
-      this.stats.sysLoad = payload.sysLoad[0];
+      this.stats.sysLoad = payload.sysLoad?.[0];
       this.stats.freeMem = Number(payload.freeMem).toFixed() + "%";
-      let upTime = parseInt(payload.upTime[0]);
+      let upTime = parseInt(payload.upTime?.[0]);
       this.stats.upTime = moment.duration(upTime, "seconds").humanize();
       this.stats.freeSpace = payload.freeSpace;
       this.stats.ipAddress = payload.ipAddress;
@@ -95,8 +108,9 @@ Module.register("MMM-SystemStats", {
 
   // Override dom generator.
   getDom: function () {
-    var self = this;
     var wrapper = document.createElement("table");
+    wrapper.classList.add(this.config.label);
+    wrapper.classList.toggle(`align-${this.config.align}`, this.config.align);
 
     var sysData = {
       cpuTemp: {
@@ -125,27 +139,51 @@ Module.register("MMM-SystemStats", {
       }
     };
 
-    Object.keys(sysData).forEach(function (item) {
+    this.config.statItems.forEach((item) => {
+      if (sysData[item] === undefined) return;
       var row = document.createElement("tr");
 
-      if (self.config.label.match(/^(text|textAndIcon)$/)) {
+      if (this.config.label.match(/^(text|textAndIcon)$/)) {
         var c1 = document.createElement("td");
-        c1.setAttribute("class", "title");
-        c1.style.textAlign = self.config.align;
-        c1.innerHTML = self.translate(sysData[item].text);
+        c1.classList.add("title");
+        c1.classList.toggle(
+          `align-${this.config.alignText}`,
+          this.config.alignText
+        );
+        c1.innerHTML = this.translate(sysData[item].text);
         row.appendChild(c1);
       }
 
-      if (self.config.label.match(/^(icon|textAndIcon)$/)) {
+      if (this.config.label.match(/^(icon|textAndIcon)$/)) {
         var c2 = document.createElement("td");
+        c2.classList.add("icon");
+        c2.classList.toggle(
+          `align-${this.config.alignIcon}`,
+          this.config.alignIcon
+        );
         c2.innerHTML = `<i class="fa ${sysData[item].icon} fa-fw"></i>`;
         row.appendChild(c2);
       }
 
       var c3 = document.createElement("td");
-      c3.setAttribute("class", "value");
-      c3.style.textAlign = self.config.align;
-      c3.innerText = self.stats[item];
+      c3.classList.add("value");
+      c3.classList.toggle("loading", this.stats[item]);
+      c3.classList.toggle(
+        `align-${this.config.alignValue}`,
+        this.config.alignValue
+      );
+      switch (this.stats[item]) {
+        case null:
+          c3.innerHTML = this.translate("LOADING");
+          break;
+        case "":
+          c3.innerHTML = this.translate("NOT_AVAILABLE");
+          break;
+        default:
+          c3.innerHTML = this.stats[item];
+          break;
+      }
+
       row.appendChild(c3);
 
       wrapper.appendChild(row);

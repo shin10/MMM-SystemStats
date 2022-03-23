@@ -1,9 +1,10 @@
 {
-	"CPU_TEMP": "Temp. CPU",
-	"SYS_LOAD": "Charge Système",
-	"RAM_FREE": "RAM Libre",
-	"UPTIME": "En fonctionnement depuis",
-	"DISK_FREE": "Espace disponible",
-	"IP_ADDRESS": "Adresse IP",
-	"TEMP_THRESHOLD_WARNING": "Temp. CPU a dépassé le seuil"
+  "NOT_AVAILABLE": "N/A",
+  "CPU_TEMP": "Temp. CPU",
+  "SYS_LOAD": "Charge Système",
+  "RAM_FREE": "RAM Libre",
+  "UPTIME": "En fonctionnement depuis",
+  "DISK_FREE": "Espace disponible",
+  "IP_ADDRESS": "Adresse IP",
+  "TEMP_THRESHOLD_WARNING": "Temp. CPU a dépassé le seuil"
 }

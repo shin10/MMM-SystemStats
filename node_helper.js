@@ -81,15 +81,13 @@ module.exports = NodeHelper.create({
       exec("hostname -I")
     ])
       .then((res) => {
-        console.log(res);
         var stats = {};
-        stats.cpuTemp = res[0].stdout;
-        stats.sysLoad = res[1].stdout.split(" ");
-        stats.freeMem = res[2].stdout;
-        stats.upTime = res[3].stdout.split(" ");
-        stats.freeSpace = res[4].stdout;
-        stats.ipAddress = res[5].stdout;
-        console.log(stats);
+        stats.cpuTemp = res[0].stdout.replace(/^\+|\s*$/g, "");
+        stats.sysLoad = res[1].stdout.replace(/\s*$/, "").split(" ");
+        stats.freeMem = res[2].stdout.replace(/\s*$/, "");
+        stats.upTime = res[3].stdout.replace(/\s*$/, "").split(" ");
+        stats.freeSpace = res[4].stdout.replace(/\s*$/, "");
+        stats.ipAddress = res[5].stdout.replace(/\s*$/, "");
         this.sendSocketNotification("STATS", stats);
       })
       .catch((err) => {
