@@ -76,7 +76,7 @@ module.exports = NodeHelper.create({
       // get uptime
       exec("cat /proc/uptime"),
       // get root free-space
-      exec("df -h|grep /dev/root|awk '{print $4}'"),
+      exec("df -h | grep '/dev/[root|sd*]' | awk '{print $4}'"),
       // get ip address
       exec("hostname -I")
     ])
