@@ -126,7 +126,7 @@ Module.register("MMM-SystemStats", {
         var c1 = document.createElement("td");
         c1.setAttribute("class", "title");
         c1.style.textAlign = self.config.align;
-        c1.innerText = self.translate(sysData[item].text);
+        c1.innerHTML = self.translate(sysData[item].text);
         row.appendChild(c1);
       }
 
