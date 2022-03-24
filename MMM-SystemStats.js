@@ -19,6 +19,7 @@ Module.register("MMM-SystemStats", {
     thresholdCPUTemp: 75, // in configured units
     baseURLSyslog: "http://127.0.0.1:8080/syslog",
     label: "textAndIcon",
+    singleLine: false,
     statItems: [
       "cpuTemp",
       "sysLoad",
@@ -110,6 +111,7 @@ Module.register("MMM-SystemStats", {
   getDom: function () {
     const wrapper = document.createElement("table");
     wrapper.classList.add(this.config.label);
+    wrapper.classList.toggle("MMM-SystemStats-single-line-layout", true || this.config.singleLine);
     wrapper.classList.toggle(`align-${this.config.align}`, this.config.align);
 
     const sysData = {

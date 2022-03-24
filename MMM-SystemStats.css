@@ -1,0 +1,8 @@
+.MMM-SystemStats-single-line-layout,
+.MMM-SystemStats-single-line-layout > row,
+.MMM-SystemStats-single-line-layout > row {
+  display: flex;
+}
+.MMM-SystemStats-single-line-layout {
+  justify-content: space-between;
+}
