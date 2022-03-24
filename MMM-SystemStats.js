@@ -73,7 +73,7 @@ Module.register("MMM-SystemStats", {
       this.stats.cpuTemp = payload.cpuTemp;
       //console.log("this.config.useSyslog-" + this.config.useSyslog + ', this.stats.cpuTemp-'+parseInt(this.stats.cpuTemp)+', this.config.thresholdCPUTemp-'+this.config.thresholdCPUTemp);
       if (this.config.useSyslog) {
-        var cpuTemp = Math.ceil(parseFloat(this.stats.cpuTemp));
+        const cpuTemp = Math.ceil(parseFloat(this.stats.cpuTemp));
         //console.log('before compare (' + cpuTemp + '/' + this.config.thresholdCPUTemp + ')');
         if (cpuTemp > this.config.thresholdCPUTemp) {
           console.log(
@@ -108,11 +108,11 @@ Module.register("MMM-SystemStats", {
 
   // Override dom generator.
   getDom: function () {
-    var wrapper = document.createElement("table");
+    const wrapper = document.createElement("table");
     wrapper.classList.add(this.config.label);
     wrapper.classList.toggle(`align-${this.config.align}`, this.config.align);
 
-    var sysData = {
+    const sysData = {
       cpuTemp: {
         text: "CPU_TEMP",
         icon: "fa-thermometer"
@@ -141,10 +141,10 @@ Module.register("MMM-SystemStats", {
 
     this.config.statItems.forEach((item) => {
       if (sysData[item] === undefined) return;
-      var row = document.createElement("tr");
+      const row = document.createElement("tr");
 
       if (this.config.label.match(/^(text|textAndIcon)$/)) {
-        var c1 = document.createElement("td");
+        const c1 = document.createElement("td");
         c1.classList.add("title");
         c1.classList.toggle(
           `align-${this.config.alignText}`,
@@ -155,7 +155,7 @@ Module.register("MMM-SystemStats", {
       }
 
       if (this.config.label.match(/^(icon|textAndIcon)$/)) {
-        var c2 = document.createElement("td");
+        const c2 = document.createElement("td");
         c2.classList.add("icon");
         c2.classList.toggle(
           `align-${this.config.alignIcon}`,
@@ -165,7 +165,7 @@ Module.register("MMM-SystemStats", {
         row.appendChild(c2);
       }
 
-      var c3 = document.createElement("td");
+      const c3 = document.createElement("td");
       c3.classList.add("value");
       c3.classList.toggle("loading", this.stats[item]);
       c3.classList.toggle(

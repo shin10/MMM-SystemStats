@@ -19,7 +19,7 @@ module.exports = NodeHelper.create({
 
   // Subclass socketNotificationReceived received.
   socketNotificationReceived: function (notification, payload) {
-    var self = this;
+    const self = this;
 
     if (notification === "CONFIG") {
       this.config = payload;
@@ -81,7 +81,7 @@ module.exports = NodeHelper.create({
       exec("hostname -I")
     ])
       .then((res) => {
-        var stats = {};
+        const stats = {};
         stats.cpuTemp = res[0].stdout.replace(/^\+|\s*$/g, "");
         stats.sysLoad = res[1].stdout.replace(/\s*$/, "").split(" ");
         stats.freeMem = res[2].stdout.replace(/\s*$/, "");
