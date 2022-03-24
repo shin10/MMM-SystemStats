@@ -26,9 +26,11 @@ module.exports = NodeHelper.create({
       // first call
       self.getStats();
       // interval call
-      setInterval(function () {
-        self.getStats();
-      }, this.config.updateInterval);
+      if (!this.intervalTimer) {
+        this.intervalTimer = setInterval(function () {
+          self.getStats();
+        }, this.config.updateInterval);
+      }
     } else if (notification === "ALERT") {
       this.config = payload.config;
       // notif syslog
