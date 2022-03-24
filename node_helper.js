@@ -14,7 +14,7 @@ const http = require("http");
 
 module.exports = NodeHelper.create({
   start: function () {
-    //console.log('Starting node helper: ' + this.name);
+    console.log("Starting node helper: " + this.name);
   },
 
   // Subclass socketNotificationReceived received.
@@ -32,7 +32,7 @@ module.exports = NodeHelper.create({
     } else if (notification === "ALERT") {
       this.config = payload.config;
       // notif syslog
-      //console.log('url : ' + payload.config.baseURLSyslog);
+      // console.log("url : " + payload.config.baseURLSyslog);
       const url =
         payload.config.baseURLSyslog +
         "?type=" +

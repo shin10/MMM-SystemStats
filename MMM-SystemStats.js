@@ -68,14 +68,10 @@ Module.register("MMM-SystemStats", {
   },
 
   socketNotificationReceived: function (notification, payload) {
-    //Log.log('MMM-SystemStats: socketNotificationReceived ' + notification);
-    //Log.log(payload);
     if (notification === "STATS") {
       this.stats.cpuTemp = payload.cpuTemp;
-      //console.log("this.config.useSyslog-" + this.config.useSyslog + ', this.stats.cpuTemp-'+parseInt(this.stats.cpuTemp)+', this.config.thresholdCPUTemp-'+this.config.thresholdCPUTemp);
       if (this.config.useSyslog) {
         const cpuTemp = Math.ceil(parseFloat(this.stats.cpuTemp));
-        //console.log('before compare (' + cpuTemp + '/' + this.config.thresholdCPUTemp + ')');
         if (cpuTemp > this.config.thresholdCPUTemp) {
           console.log(
             "alert for threshold violation (" +
@@ -111,7 +107,10 @@ Module.register("MMM-SystemStats", {
   getDom: function () {
     const wrapper = document.createElement("table");
     wrapper.classList.add(this.config.label);
-    wrapper.classList.toggle("MMM-SystemStats-single-line-layout", true || this.config.singleLine);
+    wrapper.classList.toggle(
+      "MMM-SystemStats-single-line-layout",
+      true || this.config.singleLine
+    );
     wrapper.classList.toggle(`align-${this.config.align}`, this.config.align);
 
     const sysData = {
