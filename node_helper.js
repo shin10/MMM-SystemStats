@@ -33,7 +33,7 @@ module.exports = NodeHelper.create({
       }
     } else if (notification === "ALERT") {
       this.config = payload.config;
-      // notif syslog
+      // notify syslog
       // console.log("url : " + payload.config.baseURLSyslog);
       const url =
         payload.config.baseURLSyslog +
@@ -43,24 +43,24 @@ module.exports = NodeHelper.create({
         encodeURI(payload.message);
 
       http.get(url, (response) => {
-        console.log("notif MMM-syslog with response " + response.statusCode);
+        console.log("notify MMM-syslog with response " + response.statusCode);
       });
     }
   },
 
   getStats: function () {
-    let temp_conv = "";
+    let tempConversion = "";
     switch (this.config.units) {
       case "imperial":
-        temp_conv = "awk '{printf(\"%.1f°F\\n\",(($1*1.8)/1e3)+32)}'";
+        tempConversion = "awk '{printf(\"%.1f°F\\n\",(($1*1.8)/1e3)+32)}'";
         break;
       case "metric":
-        temp_conv = "awk '{printf(\"%.1f°C\\n\",$1/1e3)}'";
+        tempConversion = "awk '{printf(\"%.1f°C\\n\",$1/1e3)}'";
         break;
       case "default":
       default:
         // kelvin
-        temp_conv = "awk '{printf(\"%.1f°K\\n\",($1/1e3)+273.15)}'";
+        tempConversion = "awk '{printf(\"%.1f°K\\n\",($1/1e3)+273.15)}'";
         break;
     }
 
@@ -69,7 +69,7 @@ module.exports = NodeHelper.create({
     Promise.all([
       // get cpu temp
       exec(
-        `if [ -f "${filePathThermal}" ]; then ${temp_conv} ${filePathThermal}; fi;`
+        `if [ -f "${filePathThermal}" ]; then ${tempConversion} ${filePathThermal}; fi;`
       ),
       // get system load
       exec("cat /proc/loadavg"),
