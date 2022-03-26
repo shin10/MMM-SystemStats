@@ -1,0 +1,15 @@
+.MMM-SystemStats .wrapper.single-line-layout {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.MMM-SystemStats .wrapper.single-line-layout > row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+/*# sourceMappingURL=MMM-SystemStats.css.map */

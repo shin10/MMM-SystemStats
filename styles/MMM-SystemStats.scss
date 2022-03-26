@@ -1,0 +1,9 @@
+.MMM-SystemStats {
+  .wrapper.single-line-layout {
+    display: flex;
+    justify-content: space-between;
+    & > row {
+      display: flex;
+    }
+  }
+}

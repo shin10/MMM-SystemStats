@@ -1,0 +1,52 @@
+.MMM-SystemStats table {
+  display: block;
+  -ms-grid-columns: (33.33%)[auto-fill];
+      grid-template-columns: repeat(auto-fill, 33.33%);
+  -ms-grid-rows: (100%)[auto-fill];
+      grid-template-rows: repeat(auto-fill, 100%);
+}
+
+.MMM-SystemStats tr {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: auto 4ch auto;
+      grid-template-columns: auto 4ch auto;
+  width: 100%;
+}
+
+.MMM-SystemStats .title {
+  text-align: left;
+  -webkit-box-ordinal-group: 4;
+      -ms-flex-order: 3;
+          order: 3;
+}
+
+.MMM-SystemStats .icon {
+  -webkit-box-ordinal-group: 3;
+      -ms-flex-order: 2;
+          order: 2;
+  text-align: center;
+}
+
+.MMM-SystemStats .value {
+  text-align: right;
+  -webkit-box-ordinal-group: 2;
+      -ms-flex-order: 1;
+          order: 1;
+}
+
+.MMM-SystemStats .wrapper.single-line-layout {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.MMM-SystemStats .wrapper.single-line-layout > row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+/*# sourceMappingURL=custom.order.example.css.map */

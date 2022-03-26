@@ -31,7 +31,7 @@ Module.register("MMM-SystemStats", {
   },
   // Define required styles.
   getStyles: function () {
-    return ["font-awesome.css", "MMM-SystemStats.css"];
+    return ["font-awesome.css", this.file("./styles/MMM-SystemStats.css")];
   },
   // Define required scripts.
   getScripts: function () {
@@ -107,7 +107,8 @@ Module.register("MMM-SystemStats", {
   getDom: function () {
     const wrapper = document.createElement("table");
     wrapper.classList.add(
-      `MMM-SystemStats-${this.config.layout}-layout`,
+      "wrapper",
+      `${this.config.layout}-layout`,
       this.config.label
     );
     wrapper.classList.toggle(`align-${this.config.align}`, this.config.align);
@@ -141,6 +142,7 @@ Module.register("MMM-SystemStats", {
 
     this.config.statItems.forEach((item) => {
       if (sysData[item] === undefined) return;
+
       const row = document.createElement("tr");
 
       if (this.config.label.match(/^(text|textAndIcon)$/)) {
